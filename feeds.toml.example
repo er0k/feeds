@@ -1,0 +1,11 @@
+out_file = "feeds.rss"
+db_file = "feeds.db"
+
+title = "Feeds Feed"
+link = "/dev/null"
+description = "A feed of feeds"
+user_agent = "NSA"
+
+[feeds]
+Linode_Feed = "https://status.linode.com/history.rss"
+Cloudflare_Feed = "https://www.cloudflarestatus.com/history.atom"
