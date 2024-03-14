@@ -21,18 +21,39 @@ conf = toml.load(args.config_file)
 fdb = feeds_db(conf['db_file'])
 
 for name, url in conf['feeds'].items():
+    previous = fdb.get_previous(name)
     print(f"fetching {name} ({url})...")
     feedparser.USER_AGENT = conf['user_agent']
-    parsed_feed = feedparser.parse(url)
+    if previous:
+        feed = feedparser.parse(url, etag=previous["etag"], modified=previous["modified"])
+    else:
+        feed = feedparser.parse(url)
 
-    for entry in parsed_feed['entries']:
+    etag = feed.etag if hasattr(feed, 'etag') else None
+    modified = feed.modified if hasattr(feed, 'modified') else None
+
+    print(f"\t{feed.status} {etag} {modified}")
+
+    if feed.status == 304:
+        continue
+    if feed.status == 429:
+        continue
+
+    for entry in feed['entries']:
+        if "published_parsed" in entry:
+            entry_date = datetime.fromtimestamp(mktime(entry["published_parsed"]))
+        else:
+            entry_date = datetime.fromtimestamp(mktime(entry["updated_parsed"]))
+
         fdb.insert_entry(
             name,
             entry['title'],
             entry['description'],
             entry['link'],
             entry['guid'],
-            datetime.fromtimestamp(mktime(entry['published_parsed']))
+            entry_date,
+            modified,
+            etag
         )
 
 

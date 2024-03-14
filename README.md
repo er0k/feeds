@@ -1,4 +1,4 @@
-# Status Feeds
+# Feeds Feed
 
 Collect various RSS feeds and aggregate them to a single RSS feed
 
