@@ -27,5 +27,5 @@ This will:
 
 ## Notes
 
-- This does not do any caching. Each time it runs it will make new HTTP requests
-to fetch feeds
+- This will do conditional fetching based on [Last-Modified](https://datatracker.ietf.org/doc/html/rfc7232#section-2.2_
+and/or [eTag](https://datatracker.ietf.org/doc/html/rfc7232#section-2.3) headers.
