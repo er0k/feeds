@@ -27,5 +27,5 @@ This will:
 
 ## Notes
 
-- This will do conditional fetching based on [Last-Modified](https://datatracker.ietf.org/doc/html/rfc7232#section-2.2_
+- This will do conditional fetching based on [Last-Modified](https://datatracker.ietf.org/doc/html/rfc7232#section-2.2)
 and/or [eTag](https://datatracker.ietf.org/doc/html/rfc7232#section-2.3) headers.
