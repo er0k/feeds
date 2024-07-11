@@ -23,7 +23,6 @@ class feeds_db:
                     modified TIMESTAMP DEFAULT NULL,
                     etag TEXT DEFAULT NULL,
                     updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                    isdeleted INTEGER DEFAULT 0 NOT NULL,
                     UNIQUE(service,title,pub_date)
                 );
                 """)
@@ -38,14 +37,22 @@ class feeds_db:
         INSERT INTO
             feeds (service, title, description, link, guid, pub_date, modified, etag)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(service,title,pub_date)
+            DO UPDATE SET
+                description=excluded.description,
+                modified=excluded.modified,
+                etag=excluded.etag
+            WHERE
+                description<>excluded.description
+                OR modified<>excluded.modified
+                OR etag<>excluded.etag
+
         """
-        try:
-            c.execute(q, (service, title, desc, link, guid, pub_date, modified, etag))
-            print(f"\tadding {service} entry: {title}")
-            self.db.commit()
-        except sqlite3.IntegrityError:
-            # failed to insert row because of UNIQUE constraint. carry on
-            pass
+        c.execute(q, (service, title, desc, link, guid, pub_date, modified, etag))
+
+        self.db.commit()
+        if c.lastrowid > 0:
+            print(f"\t{c.lastrowid}\tadded {service} entry: {title}")
 
     def get_entries(self):
         self.db.row_factory = sqlite3.Row

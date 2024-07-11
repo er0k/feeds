@@ -59,14 +59,13 @@ for name, url in conf['feeds'].items():
 
 items = []
 for entry in fdb.get_entries():
-    if not entry['isdeleted']:
-        items.append(PyRSS2Gen.RSSItem(
-            title=f"{entry['service']} :: {entry['title']}",
-            description=entry['description'],
-            link=entry['link'],
-            guid=entry['guid'],
-            pubDate=entry['pub_date']
-        ))
+    items.append(PyRSS2Gen.RSSItem(
+        title=f"{entry['service']} :: {entry['title']}",
+        description=entry['description'],
+        link=entry['link'],
+        guid=entry['guid'],
+        pubDate=entry['pub_date']
+    ))
 
 rss = PyRSS2Gen.RSS2(
     title=conf['title'],
